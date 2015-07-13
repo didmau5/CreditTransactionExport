@@ -20,9 +20,12 @@ def printRawTransactions(transactions):
 	
 #creates transaction objects given a list of transaction details
 def createTransaction(transaction):
-	resultTransaction= Transaction.Transaction(transaction[0].strip(" "), transaction[len(transaction)-1], "TestType")
+	resultTransaction= Transaction.Transaction(transaction[0].strip(" "), transaction[1] + " " + transaction[2], transaction[len(transaction)-1],  "TestType")
 	
-	print resultTransaction.description + " " + resultTransaction.amount
+	resultTransaction.printTransaction()
+	#print transaction
+	
+	#NEED TO ADD DATA STRUCTURE TransactionType, for now, using TestType string
 
 #Statement object
 pdfOutput = Statement.Statement(WINDOWS_PATH)
@@ -37,21 +40,3 @@ transactionReg = re.compile("(\S.{24})(.{13})(..)( +)(\d+\.\d\d)")
 for result in transactionReg.findall(pdfOutput.pdfString):
 	createTransaction(result)
 #print testReg.search("12")
-
-
-	
-####
-
-# TRANSACTION
-# >amount
-# >description
-# >type
-
-###
-
-# STATEMENT
-# >pdf path
-# >return string
-# >total
-
-###
