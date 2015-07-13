@@ -7,8 +7,10 @@ from cStringIO import StringIO
 import Statement
 import Transaction
 
+import re
+
 #path variables
-WINDOWS_PATH = "C:\Users\dmow\Desktop\creditStatementConversion\Input\NOV14.pdf"
+WINDOWS_PATH = "C:\Users\dmow\Documents\CreditTransactionExport\Input\NOV14.pdf"
 OSX_PATH = "/Users/DM/Downloads/creditStatementConversion/Input/NOV14.pdf"
 
 ##TEST PRINT LIST
@@ -16,52 +18,25 @@ def printRawTransactions(transactions):
 	for i in transactions:
 		print i
 	
-#checks next line for string 'US DOLLAR'
-#returns true if found, meaning there are more transactions
-#return false if not found, meaning there are no more transactions
-def checkNextLine(transaction):
-	print "check: " + str(transaction)
+#creates transaction objects given a list of transaction details
+def createTransaction(transaction):
+	resultTransaction= Transaction.Transaction(transaction[0].strip(" "), transaction[len(transaction)-1], "TestType")
 	
-	#if("US DOLLAR" in transaction):
-		#print transaction
-	#	return True
-	#else:
-	#	return False
-	
-#given an index in the transactionIndex list, prints transactions up to end of group
-#detects the next newline, signalling the end of the transaction group
-#NEED TO FIND A WAY TO LOOK ANOTHER LINE AHEAD FOR 'US DOLLAR' MEANING THE TRANSACTION GROUP HAS MORE ENTRIES
-def getTransactions(index, transactions):
-	for transaction in transactions[index:]:
-		if (len(transaction) == 0):
-			#if(not checkNextLine(transactions[ind+1:ind+2])):
-			return
-		else:
-			print str(index) + transaction
+	print resultTransaction.description + " " + resultTransaction.amount
 
-#given raw transaction list, returns indices of the first transaction in a group
-def getTransactionIndices(transactions):
-	amountFlagIndices = []
-	#find 'Amount' in this string, what follows are transactions
-	for ind, val in enumerate(transactions):
-		if (val=='Amount'):
-			amountFlagIndices.append(ind)
-	return [x+2 for x in amountFlagIndices]
-
-#return string of pdf conversion
+#Statement object
 pdfOutput = Statement.Statement(WINDOWS_PATH)
-
+print pdfOutput.pdfString
 #test print transactions
 #printRawTransactions(pdfOutput.pdfString)
 
-#holds indices of first transaction per group of transactions
-transactionIndices = getTransactionIndices(pdfOutput.pdfString)
 
-#print transactionIndices
-
-#get transactions
-for i in transactionIndices:
-	getTransactions(i, pdfOutput.pdfString)
+#testReg = re.compile("\d\d")
+transactionReg = re.compile("(\S.{24})(.{13})(..)( +)(\d+\.\d\d)")
+#transactionRegSearchResult = 
+for result in transactionReg.findall(pdfOutput.pdfString):
+	createTransaction(result)
+#print testReg.search("12")
 
 
 	

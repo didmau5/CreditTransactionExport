@@ -31,7 +31,7 @@ class Statement:
 		
 	def __init__(self, path):
 		self.path = path
-		self.pdfString = self.convert_pdf_to_txt(path).split('\n')
-		#self.total = 0
+		self.pdfString = self.convert_pdf_to_txt(path)
+		#self.amount = 0
 		
 		
