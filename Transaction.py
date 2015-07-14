@@ -7,4 +7,4 @@ class Transaction:
 		self.type = type
 		
 	def printTransaction(self):
-		print self.description + "; " + self.amount + "; " + self.location
+		print str(self.description) + ";   " + str(self.amount) + ";   " + str(self.location)

@@ -13,30 +13,29 @@ import re
 WINDOWS_PATH = "C:\Users\dmow\Documents\CreditTransactionExport\Input\NOV14.pdf"
 OSX_PATH = "/Users/DM/Downloads/creditStatementConversion/Input/NOV14.pdf"
 
-##TEST PRINT LIST
-def printRawTransactions(transactions):
-	for i in transactions:
-		print i
-	
+path = WINDOWS_PATH
+
 #creates transaction objects given a list of transaction details
 def createTransaction(transaction):
-	resultTransaction= Transaction.Transaction(transaction[0].strip(" "), transaction[1] + " " + transaction[2], transaction[len(transaction)-1],  "TestType")
-	
-	resultTransaction.printTransaction()
-	#print transaction
-	
-	#NEED TO ADD DATA STRUCTURE TransactionType, for now, using TestType string
+	resultTransaction= Transaction.Transaction(transaction[0].strip(" "), transaction[1] + " " + transaction[2], float(transaction[len(transaction)-1]),  "TestType")
+	return resultTransaction
 
 #Statement object
-pdfOutput = Statement.Statement(WINDOWS_PATH)
-print pdfOutput.pdfString
-#test print transactions
-#printRawTransactions(pdfOutput.pdfString)
+statementDescription = path.split("\\")
+pdfOutput = Statement.Statement(WINDOWS_PATH, statementDescription[-1].strip(".pdf"))
+#print pdfOutput.pdfString
 
-
-#testReg = re.compile("\d\d")
+#Description string has 25 chars max
+#location string has 13 chars max + 2 chars to denote the state/province
 transactionReg = re.compile("(\S.{24})(.{13})(..)( +)(\d+\.\d\d)")
-#transactionRegSearchResult = 
+
+#create transaction objects and append them to Statement Transactions
 for result in transactionReg.findall(pdfOutput.pdfString):
-	createTransaction(result)
-#print testReg.search("12")
+	pdfOutput.transactions.append(createTransaction(result))
+
+#for transaction in pdfOutput.transactions:
+#	transaction.printTransaction()
+
+#set statement amount
+pdfOutput.calculateTotal()
+pdfOutput.printTransactions()

@@ -4,6 +4,7 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from cStringIO import StringIO
 
+import Transaction
 
 class Statement:
 	
@@ -29,11 +30,27 @@ class Statement:
 		retstr.close()
 		return str
 		
-	def __init__(self, path):
+	def __init__(self, path,description):
+		self.description = description
 		self.path = path
 		self.pdfString = self.convert_pdf_to_txt(path)
-		#would be equal to the sum of all transaction amounts
-		#self.amount = 0
+		self.transactions = []
+		self.amount = 0
 		
+	def calculateTotal(self):
+		for transaction in self.transactions:
+			self.amount += transaction.amount
 		
-	#def printStatement(self):
+	def getNumTransactions(self):
+		return len(self.transactions)
+		
+	def printTransactions(self):
+		for transaction in self.transactions:
+			transaction.printTransaction()
+		
+	def printStatement(self):
+		print self.description
+		print "========================="
+		print "Total:                   " + str(self.amount)
+		print "Number of Transactions:  " + str(self.getNumTransactions())
+		#get user input: print all transactions?
