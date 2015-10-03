@@ -7,10 +7,12 @@ from cStringIO import StringIO
 import Statement
 import Transaction
 
+import xlsxwriter
+
 import re
 
 #path variables
-WINDOWS_PATH = "C:\Users\dmow\Documents\CreditTransactionExport\Input\NOV14.pdf"
+WINDOWS_PATH = "C:\Users\dmow\Documents\CreditTransactionExport\Input\SEPT15.pdf"
 OSX_PATH = "/Users/DM/Downloads/creditStatementConversion/Input/NOV14.pdf"
 
 path = WINDOWS_PATH
@@ -39,3 +41,25 @@ for result in transactionReg.findall(pdfOutput.pdfString):
 #set statement amount
 pdfOutput.calculateTotal()
 pdfOutput.printTransactions()
+
+#print to console
+print pdfOutput.amount
+
+#===================================
+#BREAK THIS INTO METHOD
+#1.	setup sheet template (formulae and headers)
+#2. populate with transactions
+#==================================
+#Excel Write Test
+workbook = xlsxwriter.Workbook(statementDescription[-1].strip(".pdf") + '.xlsx')
+worksheet = workbook.add_worksheet()
+
+row = 0
+col = 0
+
+for transaction in (pdfOutput.transactions):
+	worksheet.write(row,col,transaction.description)
+	worksheet.write(row,col+1,transaction.amount)
+	row+=1
+
+workbook.close()
