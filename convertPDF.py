@@ -6,13 +6,14 @@ from cStringIO import StringIO
 
 import Statement
 import Transaction
+import Sheet
 
 import xlsxwriter
 
 import re
 
 #path variables
-WINDOWS_PATH = "C:\Users\dmow\Documents\CreditTransactionExport\Input\SEPT15.pdf"
+WINDOWS_PATH = "C:\Users\dmow\Documents\CreditTransactionExport\Input\OCT15.pdf"
 OSX_PATH = "/Users/DM/Downloads/creditStatementConversion/Input/NOV14.pdf"
 
 path = WINDOWS_PATH

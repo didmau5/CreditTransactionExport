@@ -13,7 +13,7 @@ class Statement:
 	def convert_pdf_to_txt(self,path):
 		rsrcmgr = PDFResourceManager()
 		retstr = StringIO()
-		codec = 'utf-8'
+		codec = 'ascii'
 		laparams = LAParams()
 		device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
 		fp = file(path, 'rb')
