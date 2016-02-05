@@ -37,6 +37,9 @@ class Statement:
 		self.transactions = []
 		self.amount = 0
 		
+	def populateTransactions(self):
+		print "got here: populateTransactions()"
+		
 	def calculateTotal(self):
 		for transaction in self.transactions:
 			self.amount += transaction.amount
