@@ -3,26 +3,25 @@ import xlsxwriter
 class Sheet:
 		
 	filename = None
-	
+	workbook = None
 		
 	def __init__(self, filename):
-		self.filename = filename
-		#should create formats here
 		
+		global workbook
+		self.filename = filename
+		
+		#create workbook
+		workbook = xlsxwriter.Workbook(self.filename)
+
 	def recordTransactions(self, pdfString):
 
-		workbook = xlsxwriter.Workbook(self.filename)
 		worksheet = workbook.add_worksheet()
-	
+		
+		self.createSheetTemplate(worksheet)
+		
 		#add Currency Format
 		currencyFormat = workbook.add_format()
 		currencyFormat.set_num_format('"$"#,##0.00')
-		
-		#add Header Format
-		headerFormat = workbook.add_format({'bold':True,'font_size':12 ,'bg_color':'#9BC2E6'})
-		grandTotalHeaderFormat = workbook.add_format({'bold':True,'font_size':16 ,'bg_color':'#9BC2E6'})
-		
-		self.createSheetTemplate(worksheet, headerFormat, grandTotalHeaderFormat)
 		
 		#start transactions here in sheet matrix, since template was written already
 		row = 1
@@ -36,22 +35,32 @@ class Sheet:
 		workbook.close()
 		
 
-	def createSheetTemplate(self, worksheet, headColumnFormat, grandTotalFormat):
+	def createSheetTemplate(self, worksheet):
 	
 		headers = ["Total",
 					"Description",
 					"Amount",
 					"SR",
 					"Expensed"]
+
 		row = 0
 		col = 0
-	
+				
+		#add Header Format
+		headerFormat = workbook.add_format({'bold':True,'font_size':12 ,'bg_color':'#9BC2E6'})
+		grandTotalHeaderFormat = workbook.add_format({'bold':True,'font_size':16 ,'bg_color':'#9BC2E6'})
+		
 		for header in headers:
 			if (header == "Total"):
-				worksheet.write(row,col,header,grandTotalFormat)
+				worksheet.write(row,col,header,grandTotalHeaderFormat)
 				col+=1
 			else:
-				worksheet.write(row,col,header,headColumnFormat)
+				worksheet.write(row,col,header,headerFormat)
 				col+=1
-			
+		
+		#set column widths
+		worksheet.set_column('A:A', 20)
+		worksheet.set_column('B:B', 26)
+		worksheet.set_column('D:E', 9)
+		
 		print "got here: createSheetTemplate"
