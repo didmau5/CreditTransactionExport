@@ -51,5 +51,6 @@ pdfOutput.calculateTotal()
 #print pdfOutput.amount
 
 newSheet = Sheet.Sheet(statementDescription[-1].strip(".pdf") + '.xlsx')
+#sheet template created here too
 newSheet.recordTransactions(pdfOutput)
 
