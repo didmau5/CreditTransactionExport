@@ -10,14 +10,14 @@ from tkFileDialog import askopenfilename
 import Statement
 import Transaction
 import Sheet
+import Database
 
 import re
 
 def getFilePath():
 
-	#http://stackoverflow.com/questions/3579568/choosing-a-file-in-python-with-simple-dialog
-	Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-	filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+	Tk().withdraw()
+	filename = askopenfilename()
 	return filename
 
 #creates transaction objects given a list of transaction details
@@ -49,6 +49,9 @@ def main():
 	newSheet = Sheet.Sheet(statementDescription[-1].strip(".pdf") + '.xlsx')
 	#sheet template created here too
 	newSheet.recordTransactions(pdfOutput)
+	
+	#write to database
+	db = Database.Database("localhost", 27017)
 
 if __name__ == "__main__":
     main()
