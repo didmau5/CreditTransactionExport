@@ -3,6 +3,7 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from cStringIO import StringIO
+import json
 
 import Transaction
 
@@ -36,7 +37,8 @@ class Statement:
 		self.pdfString = self.convert_pdf_to_txt(path)
 		self.transactions = []
 		self.amount = 0
-		
+	
+	#not used
 	def populateTransactions(self):
 		print "got here: populateTransactions()"
 		
@@ -57,3 +59,24 @@ class Statement:
 		print "Total:                   " + str(self.amount)
 		print "Number of Transactions:  " + str(self.getNumTransactions())
 		#get user input: print all transactions?
+		
+	def convertToDBDoc(self):
+	
+		transactions = []
+		
+		for transaction in self.transactions:
+			transactions.append(json.dumps({
+				'description':transaction.description,
+				'location':transaction.location,
+				'amount':transaction.amount,
+				'type':transaction.type,
+			}))
+	
+	
+		return json.dumps({
+			'description':self.description,
+			'path':self.path,
+			#'pdfString':self.pdfString,
+			#'transactions':transactions,
+			'amount':self.amount
+		})

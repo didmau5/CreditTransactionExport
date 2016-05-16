@@ -21,7 +21,7 @@ def getFilePath():
 	return filename
 
 #creates transaction objects given a list of transaction details
-#This should be a Transaction method, or a Statement method?
+#This should be a Transaction method
 def createTransaction(transaction):
 	resultTransaction= Transaction.Transaction(transaction[0].strip(" "), transaction[1] + " " + transaction[2], float(transaction[len(transaction)-1]),  "TestType")
 	return resultTransaction
@@ -50,8 +50,18 @@ def main():
 	#sheet template created here too
 	newSheet.recordTransactions(pdfOutput)
 	
+	#========================================
 	#write to database
 	db = Database.Database("localhost", 27017)
-
+	db.connect()
+	#test find
+	testFindAllResults = db.findAll()
+	
+	print pdfOutput.convertToDBDoc()
+	print db.insert(pdfOutput.convertToDBDoc())
+	
+	
+	#========================================
+	
 if __name__ == "__main__":
     main()
