@@ -1,11 +1,9 @@
 from pymongo import MongoClient
+import json
 
 class Database:
 	
-	def __init__(self, ipAddress, port):
-		self.ipAddress = ipAddress
-		self.port = port
-		
+	def __init__(self):
 		self.client = None
 		self. db = None
 
@@ -15,7 +13,7 @@ class Database:
 	
 	#Inserts object into transactions collection and returns the result code
 	def insert(self, insertValue):
-		result = self.db.transactions.insert_one(insertValue)
+		result = self.db.transactions.insert_one(json.loads(insertValue))
 		return result
 	
 	#Enable filter search with parameters

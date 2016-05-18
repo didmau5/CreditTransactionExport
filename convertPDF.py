@@ -52,15 +52,14 @@ def main():
 	
 	#========================================
 	#write to database
-	db = Database.Database("localhost", 27017)
+	db = Database.Database()
 	db.connect()
 	#test find
 	testFindAllResults = db.findAll()
 	
-	print pdfOutput.convertToDBDoc()
+	#print pdfOutput.convertToDBDoc()
 	print db.insert(pdfOutput.convertToDBDoc())
-	
-	
+
 	#========================================
 	
 if __name__ == "__main__":

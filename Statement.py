@@ -72,11 +72,11 @@ class Statement:
 				'type':transaction.type,
 			}))
 	
-	
+
 		return json.dumps({
 			'description':self.description,
 			'path':self.path,
-			#'pdfString':self.pdfString,
-			#'transactions':transactions,
+			'pdfString':self.pdfString,
+			'transactions':transactions,
 			'amount':self.amount
 		})
