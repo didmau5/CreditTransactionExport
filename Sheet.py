@@ -1,4 +1,6 @@
 import xlsxwriter
+import json
+import MongoDB
 
 class Sheet:
 	#Globals
@@ -131,4 +133,26 @@ class Sheet:
 	
 	
 	def writeCalculatedFields(self,worksheet):
-		worksheet.write(1,0,"=SUM(C:C)",grandTotalFormat)
+		#write to database
+		#should check for successful connection before doing any of this
+		db = MongoDB.MongoDB()
+		db.connect()
+		
+		key = 'calculatedFieldFormulas'
+		
+		#test find
+		cursor = db.findConfigObject(key)
+		
+		row = 1;
+		col = 0;
+		
+		for result in cursor:
+			#do i need to be concerned about the order of the results here?
+			#if so use displayOrder to sort
+			for field in result[key]:
+				print 'Writing: ' + field['formula'] + ' to excel sheet.'
+				worksheet.write(row,col,field['formula'],grandTotalFormat)
+				if(row == 1):
+					row +=5
+				else:
+					row += 4

@@ -10,7 +10,7 @@ from tkFileDialog import askopenfilename
 import Statement
 import Transaction
 import Sheet
-import Database
+import MongoDB
 
 import re
 
@@ -19,6 +19,20 @@ def getFilePath():
 	Tk().withdraw()
 	filename = askopenfilename()
 	return filename
+	
+#should be a DB method
+def dbWriteStatement(statementData):
+
+	#write to database
+	#should check for successful connection before doing any of this
+	db = MongoDB.MongoDB()
+	db.connect()
+	#test find
+	testFindAllResults = db.findAllTransactions()
+	
+	print statementData.convertToDBDoc()
+	print db.insert(statementData.convertToDBDoc())
+
 
 #creates transaction objects given a list of transaction details
 #This should be a Transaction method
@@ -28,7 +42,9 @@ def createTransaction(transaction):
 	
 def main():
 
-	path = getFilePath()
+	#path = getFilePath()
+	
+	path = '/Users/DM/CreditTransactionExport/INPUT/MAY16.pdf'
 	
 	#Description string has 25 chars max
 	#location string has 13 chars max + 2 chars to denote the state/province
@@ -50,17 +66,7 @@ def main():
 	#sheet template created here too
 	newSheet.recordTransactions(pdfOutput)
 	
-	#========================================
-	#write to database
-	db = Database.Database()
-	db.connect()
-	#test find
-	testFindAllResults = db.findAll()
-	
-	#print pdfOutput.convertToDBDoc()
-	print db.insert(pdfOutput.convertToDBDoc())
-
-	#========================================
+	#dbWriteStatement(pdfOutput)
 	
 if __name__ == "__main__":
     main()
