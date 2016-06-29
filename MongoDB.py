@@ -30,6 +30,11 @@ class MongoDB:
 		cursor = self.db.configuration.find({'_id':ObjectId("5761cc65b74d4cb7b2bbef78")})
 		return cursor
 		
+	#return specified transaction group
+	def findTransactionGroups(self, transactionGroup):
+		#currently uses config object of Transaction Groups
+		#DO NOT LEAVE THIS HARDCODED
+		cursor = self.db.configuration.find({"_id" : ObjectId("577412208f8bf9a756d83462")})
 		
 	#def update(self):
 	

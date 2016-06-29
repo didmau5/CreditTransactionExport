@@ -1,8 +1,5 @@
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfpage import PDFPage
 from cStringIO import StringIO
+import os
 #for input file selection dialog
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
@@ -30,41 +27,43 @@ def dbWriteStatement(statementData):
 	#test find
 	testFindAllResults = db.findAllTransactions()
 	
-	print statementData.convertToDBDoc()
+	#print statementData.convertToDBDoc()
 	print db.insert(statementData.convertToDBDoc())
 
-
-#creates transaction objects given a list of transaction details
-#This should be a Transaction method
-def createTransaction(transaction):
-	resultTransaction= Transaction.Transaction(transaction[0].strip(" "), transaction[1] + " " + transaction[2], float(transaction[len(transaction)-1]),  "TestType")
-	return resultTransaction
-	
 def main():
 
 	#path = getFilePath()
 	
-	path = '/Users/DM/CreditTransactionExport/INPUT/MAY16.pdf'
+	path = '/Users/DM/CreditTransactionExport/INPUT/StephCreditCard.pdf'
+	
+	db = MongoDB.MongoDB()
+	db.connect()
 	
 	#Description string has 25 chars max
 	#location string has 13 chars max + 2 chars to denote the state/province
-	transactionReg = re.compile("(\S.{24})(.{13})(..)( +)(\d+\.\d\d)")
+	#CR indicates a credit return
+	transactionReg = re.compile("(\S.{24})(.{13})(..)( +)(\d+\.\d\d)(?!%)(CR)?")
 
 	#Statement object
 	statementDescription = path.split("/")
-	pdfOutput = Statement.Statement(path, statementDescription[-1].strip(".pdf"))
+	pdfOutput = Statement.Statement(path, os.path.splitext(statementDescription[-1])[0])
 	#print pdfOutput.pdfString
 
 	#create transaction objects and append them to Statement Transactions
-	for result in transactionReg.findall(pdfOutput.pdfString):
-		pdfOutput.transactions.append(createTransaction(result))
+	for transaction in transactionReg.findall(pdfOutput.pdfString):
+		pdfOutput.transactions.append(Transaction.Transaction(transaction[0].strip(" "), transaction[1] + " " + transaction[2], float(transaction[len(transaction)-2]),  transaction[-1], db))
 
 	#set statement amount
 	pdfOutput.calculateTotal()
-
-	newSheet = Sheet.Sheet(statementDescription[-1].strip(".pdf") + '.xlsx')
+	newSheet = Sheet.Sheet(os.path.splitext(statementDescription[-1])[0] + '.xlsx')
 	#sheet template created here too
-	newSheet.recordTransactions(pdfOutput)
+	
+
+	newSheet.recordTransactions(pdfOutput, db)
+	
+	##================
+	#print pdfOutput.pdfString
+	
 	
 	#dbWriteStatement(pdfOutput)
 	

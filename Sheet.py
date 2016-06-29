@@ -58,12 +58,12 @@ class Sheet:
 		
 	#def setFormats(self)	
 		
-	def recordTransactions(self, pdfString):
+	def recordTransactions(self, pdfString, db):
 
 		global currencyFormat
 		
 		worksheet = workbook.add_worksheet()
-		self.createSheetTemplate(worksheet)
+		self.createSheetTemplate(worksheet, db)
 
 		#start transactions here in sheet matrix, since template was written already
 		row = 1
@@ -71,21 +71,22 @@ class Sheet:
 		for transaction in (pdfString.transactions):
 			worksheet.write(row,col,transaction.description)
 			worksheet.write(row,col+1,transaction.amount, currencyFormat)
+			worksheet.write(row,col+2,transaction.type)
 			row+=1
 
 		workbook.close()
 
-	def createSheetTemplate(self, worksheet):
+	def createSheetTemplate(self, worksheet,db):
 	
 		self.writeHeader(worksheet)
 		self.writeCalculatedFieldHeaders(worksheet)
-		self.writeCalculatedFields(worksheet)
+		self.writeCalculatedFields(worksheet,db)
 		
 	def writeHeader(self,worksheet):
 		headers = ["Total",
 					"Description",
 					"Amount",
-					"SR",
+					"Type",
 					"Expensed"]
 
 		row = 0
@@ -104,8 +105,12 @@ class Sheet:
 		worksheet.set_column('D:E', 9)
 	
 	def writeCalculatedFieldHeaders(self, worksheet):
+		#pull these from DB
 		calculatedFieldHeaders=["Grocery Total", 
 								"Gas Total",
+								"Restaurant Total",
+								"BC Ferries Total",
+								"Shared Total",
 								"Nester's Total", 
 								"Choices Total", 
 								"Whole Foods Total", 
@@ -113,9 +118,9 @@ class Sheet:
 								"Urban Fair Total", 
 								"London Drugs Total",
 								"Expense Spent",
-								"Steph Total"]
+								]
 								
-		topSubTotalHeaders = calculatedFieldHeaders[0:2]
+		topSubTotalHeaders = calculatedFieldHeaders[0:5]
 								
 		#starting point in sheet of calculated totals
 		row = 5
@@ -132,13 +137,11 @@ class Sheet:
 				row = row + calculatedRowHeaderSpacing
 	
 	
-	def writeCalculatedFields(self,worksheet):
+	def writeCalculatedFields(self,worksheet, db):
 		#write to database
 		#should check for successful connection before doing any of this
-		db = MongoDB.MongoDB()
-		db.connect()
 		
-		key = 'calculatedFieldFormulas'
+		key = 'CalculatedFieldFormulas'
 		
 		#test find
 		cursor = db.findConfigObject(key)
@@ -149,8 +152,9 @@ class Sheet:
 		for result in cursor:
 			#do i need to be concerned about the order of the results here?
 			#if so use displayOrder to sort
-			for field in result[key]:
-				print 'Writing: ' + field['formula'] + ' to excel sheet.'
+			sortedResults = sorted(result[key], key=lambda k:k['displayOrder'])
+			for field in sortedResults:
+				#print 'Writing: ' + field['formula'] + ' to excel sheet.'
 				worksheet.write(row,col,field['formula'],grandTotalFormat)
 				if(row == 1):
 					row +=5

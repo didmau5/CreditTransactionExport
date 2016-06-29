@@ -60,6 +60,7 @@ class Statement:
 		print "Number of Transactions:  " + str(self.getNumTransactions())
 		#get user input: print all transactions?
 		
+	#Mapper for transactions->json
 	def convertToDBDoc(self):
 	
 		transactions = []
