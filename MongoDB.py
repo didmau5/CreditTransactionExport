@@ -27,15 +27,17 @@ class MongoDB:
 	def findConfigObject(self, configObjectKey):
 		#currently uses config object of calculatedFieldFormulas
 		#DO NOT LEAVE THIS HARDCODED
-		cursor = self.db.configuration.find({'_id':ObjectId("5761cc65b74d4cb7b2bbef78")})
+		cursor = self.db.configuration.find({'_id':1})
 		return cursor
 		
 	#return specified transaction group
-	def findTransactionGroups(self, transactionGroup):
+	def findTransactionGroups(self):
 		#currently uses config object of Transaction Groups
 		#DO NOT LEAVE THIS HARDCODED
-		cursor = self.db.configuration.find({"_id" : ObjectId("577412208f8bf9a756d83462")})
+		cursor = self.db.configuration.find({"_id" : 2})
+		return cursor
 		
 	#def update(self):
 	
-	#def close(self):
+	def close(self):
+		self.client.close()
