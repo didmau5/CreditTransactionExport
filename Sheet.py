@@ -110,6 +110,7 @@ class Sheet:
 								"Gas Total",
 								"Restaurant Total",
 								"BC Ferries Total",
+								"Parking Total",
 								"Shared Total",
 								"Nester's Total", 
 								"Choices Total", 
@@ -120,7 +121,7 @@ class Sheet:
 								"Expense Spent",
 								]
 								
-		topSubTotalHeaders = calculatedFieldHeaders[0:5]
+		topSubTotalHeaders = calculatedFieldHeaders[0:6]
 								
 		#starting point in sheet of calculated totals
 		row = 5

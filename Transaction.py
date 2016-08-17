@@ -3,6 +3,7 @@ import MongoDB
 class Transaction:
 	
 	RESTAURANTS = "REST"
+	PARKING = "PARK"
 	TYPE_NOT_DEFINED = ""
 	
 	def __init__(self, description, location, amount, type, db):
@@ -35,13 +36,30 @@ class Transaction:
 		"Shizen Ya",
 		"Ramen Zinya",
 		"Pastis",
-		"Hapa Izakaya"
+		"Hapa Izakaya",
+		"Akbars Own Dining",
+		"Wildtale",
+		"Nando's",
+		"The Chopped Leaf",
+		"Dominos",
+		"Trees",
+		"Bella Gelateria"
 		]
 		
-		for keyword in restGroupList:
-			if((keyword.upper() in self.description) and self.amount > 15 ):
+		parkGroupList = ["Impark",
+		"Easypark"
+		]
+		
+		for restKeyword in restGroupList:
+			if((restKeyword.upper() in self.description) and self.amount > 14 ):
 				self.type = self.RESTAURANTS
 				return self.RESTAURANTS
+		
+		for parkKeyword in parkGroupList:
+			if((parkKeyword.upper() in self.description)):
+				self.type = self.PARKING
+				return self.PARKING
+		
 		
 		return self.TYPE_NOT_DEFINED
 		
